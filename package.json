@@ -1,0 +1,30 @@
+{
+    "name": "jstools-ts",
+    "private": false,
+    "version": "0.0.0",
+    "description": "jstools but in typescript",
+    "main": "dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "author": {
+        "name": "moojor224",
+        "email": "moojor224@gmail.com"
+    },
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "dependencies": {
+        "@types/react": "^19.0.12",
+        "@types/react-dom": "^19.0.4",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "tsup": "^8.3.6",
+        "typescript": "^5.7.3",
+        "zod": "^3.24.2"
+    },
+    "scripts": {
+        "prepack": "tsup"
+    }
+}
