@@ -1,5 +1,5 @@
 {
-    "name": "jstools-ts",
+    "name": "@moojor224/jstools-ts",
     "private": false,
     "version": "0.0.0",
     "description": "jstools but in typescript",
