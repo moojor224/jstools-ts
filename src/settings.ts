@@ -1,5 +1,4 @@
 import React from "react";
-import z from "zod";
 import { createElement } from "./createElement.js";
 import { DevtoolsFormatter, Narrow } from "./types.js";
 import { extend } from "./utility.js";
@@ -246,6 +245,12 @@ export class Section {
                 }
             }
         }
+        let settings = this.settings_obj;
+        let parent_cont = true;
+        if(settings && !event.defaultPrevented && cont) {
+            parent_cont = !!settings.dispatchEvent(event);
+        }
+        return !event.defaultPrevented && cont && parent_cont;
         return (!event.defaultPrevented && cont) ? this.settings_obj?.dispatchEvent(event) || false : false;
     }
 
@@ -537,6 +542,12 @@ export class Option<T extends (keyof OptionTypes | keyof OptionInputTypes)> {
                 }
             }
         }
+        let section = this.section_obj;
+        let parent_cont = true;
+        if(section && !event.defaultPrevented && cont) {
+            parent_cont = !!section.dispatchEvent(event);
+        }
+        return !event.defaultPrevented && cont && parent_cont;
         return (!event.defaultPrevented && cont) ? (!!this.section_obj?.dispatchEvent(event)) : false;
     }
     /**
