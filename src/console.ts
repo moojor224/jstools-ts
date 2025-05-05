@@ -1,3 +1,4 @@
+import { extend } from "./utility";
 
 /**
  * sets `console.everything` to an array of the console's history\
@@ -61,6 +62,42 @@ export function captureConsole() {
                     console.originalerror.apply(console, [...log.args]);
                 }
             });
+        }
+    }
+}
+
+interface ConsolePrefixOptions {
+    str: string;
+    styles?: string;
+}
+
+const defaultOptions = {
+    str: "LOG",
+    styles: "background-color:#e6e6e6;color:white;border-radius:2px"
+};
+
+export function consolePrefix(options: ConsolePrefixOptions) {
+    let { str, styles = "" } = extend(JSON.parse(JSON.stringify(defaultOptions)) as ConsolePrefixOptions, options);
+    str = `%c${str.replaceAll("%", "%%")}%c`;
+    return function (...args: any[]) {
+        if (args.length === 0) {
+            console.log(str, styles);
+        } else if (args.length === 1) {
+            if (typeof args[0] === "string") {
+                args[0] = str + " " + args[0];
+            } else {
+                args.unshift(str);
+            }
+            args.splice(1, 0, styles, "");
+            console.log(...args);
+        } else {
+            if (typeof args[0] == "string") {
+                args[0] = str + " " + args[0];
+                args.splice(1, 0, styles, "");
+            } else {
+                args.unshift(str, styles, "");
+            }
+            console.log(...args);
         }
     }
 }
