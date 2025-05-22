@@ -24,7 +24,7 @@ if ("devtoolsFormatters" in window && !Array.isArray(window.devtoolsFormatters))
 
 export { flattenChildNodes, flattenChildren, interleaveArrays, rectangle, reshape } from "./src/arrays.js";
 export { bulkElements } from "./src/bulkElements.js";
-export { captureConsole, consolePrefix } from "./src/console.js";
+export { captureConsole, customLogger } from "./src/console.js";
 export { CSSColors, Color, getColor, getContrastColor, gradient, rgbMix } from "./src/colors.js";
 export { createElement } from "./src/createElement.js";
 export { cssObjToString, jst_CSSRule, jst_CSSStyleSheet } from "./src/CSS.js";
