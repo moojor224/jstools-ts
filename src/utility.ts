@@ -6,9 +6,8 @@ import { js_beautify } from "./lib/beautify.js";
 import { flattenChildNodes } from "./arrays.js";
 
 /**
- * @param {any | undefined} val 
- * @param {any} def 
- * @returns {any | undefined}
+ * @param val
+ * @param def
  */
 export function getValueOrDefault(val: any | undefined, def: any): any | undefined {
     if (val === undefined || val === null) return def;
@@ -76,8 +75,7 @@ export function makeTemplate(strings: TemplateStringsArray, ...keys: any[]): Fun
 /**
  * uses JSON.stringify and JSON.parse to copy an object and return the copy\
  * WARNING: do not use on objects that contain recursive references, or an error will be thrown
- * @param {Object} obj object to copy
- * @returns {Object}
+ * @param obj object to copy
  * @example
  * let obj1 = {
  *     a: 1,
@@ -89,7 +87,7 @@ export function makeTemplate(strings: TemplateStringsArray, ...keys: any[]): Fun
  * // obj1 == {a: 4, b: 2, c: 3}
  * // obj2 == {a: 1, b: 2, c: 3}
  */
-export function copyObject(obj: any): any {
+export function copyObject(obj: Narrow<any>): typeof obj {
     let result = obj;
     var type = {}.toString.call(obj).slice(8, -1);
     if (type == 'Set') return new Set([...obj].map(value => copyObject(value))); // convert list of values to array and copy each value
@@ -108,8 +106,7 @@ export function copyObject(obj: any): any {
 
 /**
  * converts an entire string to html entities
- * @param {string} str string to convert
- * @returns {string} converted string
+ * @param str string to convert
  */
 export function toHTMLEntities(str: string): string {
     return str.split("").map(e => `&#${e.charCodeAt(0)};`).join("");
@@ -145,11 +142,7 @@ interface LogFormattedConfig {
 }
 /**
  * logs a syntax-highlighted, formatted version of an object to the console
- * @param {any} object the object to parse
- * @type {{
- * (object: any, options?: LogFormattedConfig | {raw: true}) => {html:string,logs:string,styles:string[]},;
- * (object: any, options?: LogFormattedConfig | {raw: false|undefined}) => void;
- * }}
+ * @param object the object to parse
  */
 // @ts-ignore
 export let logFormatted: {
@@ -176,8 +169,7 @@ export let logFormatted: {
         let indexes: number[] = []; // array of indexes where objects should be embedded
         /**
          * alternative to JSON.stringify that auto-formats the result and supports functions
-         * @param {any} obj object to stringify
-         * @returns {string}
+         * @param obj object to stringify
          */
         function stringify(obj: any): string {
             if (depth > maxDepth) { // prevent stringifying objects deeper than the max depth
@@ -401,8 +393,7 @@ Object.defineProperty(logFormatted, "PRISM_CLASSES", {
 
 /**
  * stringifies an object
- * @param {any} obj the object to stringify
- * @returns {string} the stringified object
+ * @param obj the object to stringify
  */
 export function stringify(obj: any): string {
     let objects: any[] = []; // array that holds list of all objects
@@ -485,8 +476,7 @@ export function stringify(obj: any): string {
 
 /**
  * logs and returns an object
- * @param {any} arg
- * @returns {typeof arg}
+ * @param arg
  */
 export function logAndReturn(arg: any): typeof arg {
     console.log(arg);
@@ -508,8 +498,7 @@ export let timeConversions = (function () {
 
 /**
  * checks if a functon is asynchronous
- * @param {Function} func the function to check
- * @returns {Boolean}
+ * @param func the function to check
  */
 export function isAsync(func: Function): boolean {
     const AsyncFunction = (async () => { }).constructor;
@@ -609,7 +598,6 @@ export function createEnum<E extends Record<string, BasicAny | NestedBasicAnyArr
 
 /**
  * this type definition actually somehow works better than createEnum, but it might be a bug so I'm leaving createEnum in
- * @type {<E extends Record<string, T>, T>(values: Narrow<E>) => E}
  */
 export const createTypedEnum: <E extends Record<string, T>, T>(values: Narrow<E>) => E = createEnum as unknown as typeof createTypedEnum;
 
@@ -669,10 +657,7 @@ export function wrapInQuotes(str: string) {
     return `"${str.replaceAll('"', '\\"')}"`;
 }
 
-/**
- * @returns {"Edge" | "Firefox" | "Chrome" | "Safari" | "Opera" | "Unknown"}
- */
-export function getBrowserType(): "Edge" | "Firefox" | "Chrome" | "Safari" | "Opera" | "Unknown" {
+export function getBrowserType() {
     let ua = navigator.userAgent;
     if (ua.includes("Edg")) return "Edge";
     if (ua.includes("Firefox")) return "Firefox";
@@ -702,12 +687,11 @@ export function objectToJSONML(obj: any) {
 
 /**
  * gets the sha256 hash of a script
- * @param {string} source the raw source of the script
- * @returns {string} the sha256 hash of the script
+ * @param sourceUrl the source url of the script
  * @example
  * let hash = await hashScript("console.log('hello world')");
  */
-export async function hashScript(source: string): Promise<string> {
+export async function hashScript(sourceUrl: string): Promise<string> {
     async function hashText(buffer: BufferSource) {
         return await crypto.subtle.digest("SHA-256", buffer);
     }
@@ -727,17 +711,11 @@ export async function hashScript(source: string): Promise<string> {
         const integrity = await integrityMetadata(buffer);
         return integrity;
     }
-    return await hash(source);
+    return await hash(sourceUrl);
 }
 
 /**
  * gets the file and line number of where the getStack function is called
- * @returns {{
- *     file: string,
- *     lineno: string,
- *     charno: string,
- *     trace: string[]
- * }}
  */
 export function getStack(): {
     file: string;
@@ -756,9 +734,8 @@ export function getStack(): {
 
 /**
  * converts an object to a table
- * @param {{[key: string]: {[key: string]: any}}} obj object to convert
- * @param {(colname: string, rowName: string, val: any) => any} callback callback to call on every value before inserting it into the table
- * @returns {HTMLTableElement} the table element
+ * @param obj object to convert
+ * @param callback callback to call on every value before inserting it into the table
  * @example
  * let obj = {
  *     row1: {
@@ -779,7 +756,7 @@ export function getStack(): {
  * };
  * let table = objectToTable(obj);
  */
-export function objectToTable(obj: { [key: string]: { [key: string]: any; }; }, header = "", callback: (colname: string, rowName: string, val: any) => any = (colName, rowName, val) => val): HTMLTableElement {
+export function objectToTable(obj: {[key: string]: {[key: string]: any; }; }, header = "", callback: (colname: string, rowName: string, val: any) => any = (colName, rowName, val) => val): HTMLTableElement {
     let rowKeys = Object.keys(obj);
     let colKeys = Object.keys(obj[rowKeys[0]]);
     let table = createElement("table");

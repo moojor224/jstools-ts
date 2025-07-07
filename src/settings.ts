@@ -496,7 +496,6 @@ export class Option<T extends (keyof OptionTypes | keyof OptionInputTypes)> {
      * @param options options to watch
      * @param callback
      * @param args
-     * @returns {React.default.ReactElement}
      */
     static bindOptionsToReactElement<T extends Option<any>[], A extends any[]>(options: Narrow<T>, callback: (options: T, ...args: A) => HTMLElement, args: Narrow<A>): React.ReactElement {
         function Component() {

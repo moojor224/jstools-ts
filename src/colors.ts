@@ -1,18 +1,17 @@
 import { flattenChildNodes } from "./arrays";
 import { map } from "./math";
 import { extend } from "./utility";
-/**
- * returns css rgb string based off of a percent value of a gradient
- * @param {number} p number in range from 0-100
- * @param {Object[]} colors array of rgb colors
- * @returns {string}
- */
 type color = {
     r: number;
     g: number;
     b: number;
     [key: string]: number;
 }
+/**
+ * returns css rgb string based off of a percent value of a gradient
+ * @param p number in range from 0-100
+ * @param colors array of rgb colors
+ */
 export function rgbMix(
     p: number,
     colors: color[] = [
@@ -43,8 +42,7 @@ export function rgbMix(
 /**
  * generates a gradient of colors from the specified array
  * @param count number of colors to generate
- * @param  colors array of colors in gradient
- * @returns {string[]} array of colors generated
+ * @param colors array of colors in gradient
  */
 export function gradient(count: number, colors: color[] = [
     { r: 0xff, g: 0, b: 0 }, // 0% red
@@ -65,8 +63,7 @@ export function gradient(count: number, colors: color[] = [
 
 /**
  * returns the value of the given css variable name
- * @param {string} varname css variable name
- * @returns {string} value of css variable
+ * @param varname css variable name
  */
 export function getColor(varname: string, ...append: string[]): string {
     let color = getComputedStyle(document.querySelector(":root") as Element).getPropertyValue(varname); // get css variable value
@@ -78,8 +75,7 @@ export function getColor(varname: string, ...append: string[]): string {
 
 /**
  * return white or black depending on the contrast of the given color
- * @param {string} rgb rgb(R, G, B) formatted color
- * @returns {"#000000" | "#FFFFFF"} black or white
+ * @param rgb rgb(R, G, B) formatted color
  */
 export function getContrastColor(rgb: string): "#000000" | "#FFFFFF" {
     let [r, g, b] = rgb.replaceAll(/[^0-9 ]/g, "").split(" ").map(e => parseFloat(e));

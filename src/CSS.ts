@@ -23,14 +23,12 @@ const checkValidSelector = function (selector: string) {
 }
 
 export class jst_CSSRule {
-    /** @type {jst_CSSStyleSheet} */
     stylesheet: jst_CSSStyleSheet | jst_CSSRule | null = null;
 
-    /** @type {CSSStyleDeclaration} */
-    _style: Record<string | symbol, any> = {};
+    _style: Partial<CSSStyleDeclaration & { [key: `--${string}`]: string | number | symbol; }> = {};
     style = new Proxy(this._style, {
         get: (target, prop) => {
-            return target[prop];
+            return target[prop as keyof CSSStyleDeclaration];
         },
         set: (target, prop, value) => {
             let newName = prop;
@@ -38,6 +36,7 @@ export class jst_CSSRule {
                 newName = prop.replaceAll(/[A-Z]/g, e => `-${e.toLowerCase()}`);
                 if (!validStyles.includes(newName as any)) throw new Error("Invalid style property: " + prop);
             }
+            // @ts-ignore
             target[newName] = value;
             this.update();
             return true;
@@ -55,7 +54,9 @@ export class jst_CSSRule {
             let newName = e[0].replaceAll(/[A-Z]/g, e => `-${e.toLowerCase()}`); // convert name to valid css notation
             if (changed) {
                 if (!validStyles.includes(newName as any)) return;
+                // @ts-ignore
                 styles[newName] = e[1];
+                // @ts-ignore
                 delete styles[e[0]];
             }
         });
@@ -114,11 +115,10 @@ export class jst_CSSRule {
         if (this.stylesheet) this.stylesheet.update();
     }
 
-    /** @type {HTMLElement[]} */
     attachedElements: [HTMLElement, string][] = [];
     /**
      * attaches the rule to an element
-     * @param {HTMLElement} el the elenet to attach the rule to
+     * @param el the elenet to attach the rule to
      */
     attachTo(...el: HTMLElement[]) {
         let rule = this; // save reference to this rule
@@ -136,8 +136,8 @@ export class jst_CSSRule {
 
     /**
      * detaches the rule from an element and optionally reverts the element to its original style
-     * @param {HTMLElement} el the element to detach the rule from
-     * @param {Boolean} revert whether to revert the element to its original style
+     * @param el the element to detach the rule from
+     * @param revert whether to revert the element to its original style
      */
     detachFrom(el: HTMLElement, revert: boolean = true) {
         if (!(el instanceof HTMLElement)) return; // only allow html elements
@@ -148,12 +148,10 @@ export class jst_CSSRule {
         if (revert) detachedEl[0].style = detachedEl[1]; // if revert is true, revert the element to its original style
     }
 
-    /** @type {jst_CSSRule[]} */
     sub_rules: jst_CSSRule[] = [];
     /**
      * adds child rules to the current rule
-     * @param  {...jst_CSSRule} rules the ruels to add
-     * @returns {jst_CSSRule}
+     * @param rules the ruels to add
      */
     addRules(...rules: jst_CSSRule[]): jst_CSSRule {
         rules.forEach(rule => {
@@ -167,15 +165,15 @@ export class jst_CSSRule {
 
     /**
      * looks for a rule in the stylesheet by its selector
-     * @param {string} selector the selector to search for
-     * @returns {jst_CSSRule}
+     * @param selector the selector to search for
      */
-    findRule(selector: string) { } // placeholder
+    findRule(selector: string): jst_CSSRule | null {
+        return null
+    } // placeholder
 
     /**
      * checks the document to see if the rule is being used
-     * @param {boolean} logResults whether to console.log the results after running
-     * @returns {{ count: number, elements: HTMLElement[], rule: jst_CSSRule }}
+     * @param logResults whether to console.log the results after running
      */
     checkCoverage(logResults: boolean = false): { count: number; elements: HTMLElement[]; rule: jst_CSSRule; } {
         let elements;
@@ -197,12 +195,11 @@ export class jst_CSSRule {
 }
 type Stack = { file: string, lineno: string, charno: string, trace: string[] };
 export class jst_CSSStyleSheet {
-    /** @type {jst_CSSRule[]} */
     sub_rules: jst_CSSRule[] = [];
     init_stack: Stack | null = null;
     /**
      * creates a new stylesheet
-     * @param {jst_CSSRule[]} rules array of rules
+     * @param rules array of rules
      */
     constructor(...rules: jst_CSSRule[]) {
         this.sub_rules = rules.filter(e => e instanceof jst_CSSRule);
@@ -211,7 +208,7 @@ export class jst_CSSStyleSheet {
 
     /**
      * add rules to the stylesheet
-     * @param  {...jst_CSSRule} rules the rules to add
+     * @param rules the rules to add
      */
     addRules(...rules: jst_CSSRule[]) {
         rules.forEach(rule => {
@@ -234,8 +231,7 @@ export class jst_CSSStyleSheet {
 
     /**
      * compiles the stylesheet into css text
-     * @param {Boolean} minify whether to minify the result or not
-     * @returns {string}
+     * @param minify whether to minify the result or not
      */
     compile(minify: boolean = false): string {
         let join = "\n";
@@ -249,7 +245,6 @@ export class jst_CSSStyleSheet {
         return compiled.join(join);
     }
 
-    /** @type {HTMLStyleElement} */
     styleElement: HTMLStyleElement | null = null;
     /** whether the stylesheet has been injected */
     injected = false;
@@ -257,12 +252,11 @@ export class jst_CSSStyleSheet {
     link = false;
     /** 
      * injects the stylesheet into the document
-     * @param {Boolean} update whether to update the stylesheet if a rule is changed
-     * @returns {string} the compiled stylesheet
+     * @param update whether to update the stylesheet if a rule is changed
+     * @returns the compiled stylesheet
      */
     inject(update: boolean = false): string {
         if (this.injected) return "";
-        this.injected = true;
         let compiled = this.compile(true);
         let sheet = this;
         let style = (function () {
@@ -271,21 +265,23 @@ export class jst_CSSStyleSheet {
             }
             return createElement("style", { innerHTML: compiled });
         })();
-        this.styleElement = style;
         document.head.append(style);
+        this.styleElement = style;
+        this.injected = true;
         return compiled;
     }
 
     /**
      * looks for a rule in the stylesheet by its selector
-     * @param {string} selector the selector to search for
-     * @returns {jst_CSSRule}
+     * @param selector the selector to search for
      */
-    findRule(selector: string) { } // placeholder
+    findRule(selector: string): jst_CSSRule | null {
+        return null
+    } // placeholder
 
     /**
      * checks the webpage to see which css rules in the sheet are currently being used
-     * @param {boolean} logResults whether to console.log the results after running
+     * @param logResults whether to console.log the results after running
      */
     checkCoverage(logResults: boolean = false) {
         if (logResults) {
@@ -328,7 +324,6 @@ export class jst_CSSStyleSheet {
             return results;
         }
         this._watchingCoverage = true;
-        /** @type {jst_CSSRule[]} */
         this._rules = this.sub_rules.flatMap(e => flatRule(e));
         this._covered = [];
         let sheet = this;
@@ -352,8 +347,7 @@ export class jst_CSSStyleSheet {
 }
 
 /**
- * @param {jst_CSSRule} rule
- * @returns {jst_CSSRule[]}
+ * @param rule
  */
 function flatRule(rule: jst_CSSRule): jst_CSSRule[] {
     let result = [rule];
@@ -362,11 +356,9 @@ function flatRule(rule: jst_CSSRule): jst_CSSRule[] {
 }
 
 /**
- * @param {string} selector
- * @returns {jst_CSSRule}
+ * @param selector
  */
 // function findRule(selector: string): jst_CSSRule {
-//     /** @type {jst_CSSRule[]} */
 //     let rules: jst_CSSRule[] = this.sub_rules.flatMap(e => flatRule(e));
 //     let found = rules.find(rule => {
 //         let computed = rule.computedSelector();
@@ -468,8 +460,7 @@ function camelCaseToHyphen(str: string) {
 
 /**
  * converts a css object to a string
- * @param {CSSStyleDeclaration} object css object to convert to string
- * @returns {string}
+ * @param object css object to convert to string
  */
 export function cssObjToString(object: CSSStyleDeclaration): string {
     return Object.entries(object).map(e => `${camelCaseToHyphen(e[0])}: ${e[1]};`).join("\n");

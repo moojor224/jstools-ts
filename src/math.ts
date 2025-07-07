@@ -1,8 +1,7 @@
 /**
  * rounds a number {v} to the nearest multiple of {t}
- * @param {number} v the value to round
- * @param {number} t the multiple to round to
- * @returns {number}
+ * @param v the value to round
+ * @param t the multiple to round to
  */
 export function roundf(v: number, t: number): number {
     return Math.round(v / t) * t;
@@ -49,16 +48,19 @@ export function rand(min: number, max: number): number {
 }
 Math.rand = rand;
 
+export function range(start: number): number[];
+export function range(start: number, stop: number): number[];
+export function range(start: number, stop: number, step: number): number[];
 /**
  * generate a range of numbers. functionally the same as python's range function
- * @param {number} start range start
- * @param {number} stop range end
- * @param {number} step step between numbers
+ * @param start range start
+ * @param stop range end
+ * @param step step between numbers
  */
-export function range(start: number, stop: number, step: number) {
+export function range(start: number, stop?: number, step?: number) {
     let args = [start, stop, step].filter(e => typeof e != "undefined");
-    if (args.length == 1) return Math.range(0, args[0], 1);
-    if (args.length == 2) return Math.range(args[0], args[1], 1);
+    if (args.length == 1) return range(0, args[0], 1);
+    if (args.length == 2) return range(args[0], args[1], 1);
     let arr = [];
     for (let i = args[0]; i < args[1]; i += args[2]) arr.push(i);
     return arr;

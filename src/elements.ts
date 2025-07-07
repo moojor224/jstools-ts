@@ -7,29 +7,6 @@ import React from "react";
 import { EventListener } from "./types";
 _node_overrides();
 
-/**
- * appends any number of objects to an HTMLElement
- * @param  {...Element} args an array of objects to be added to the parent element
- * @returns {typeof this}
- * @memberof HTMLElement
- * @function external:HTMLElement#add
- * @example
- * createElement("table").add(
- *      createElement("tr").add(
- *          createElement("td", {innerHTML: "col 1"}),
- *          createElement("td", {innerHTML: "col 2"}),
- *          createElement("td", {innerHTML: "col 3"})
- *      )
- * );
- * // results in:
- * <table>
- *     <tr>
- *         <td>col 1</td>
- *         <td>col 2</td>
- *         <td>col 3</td>
- *     </tr>
- * </table>
- */
 Object.defineProperty(HTMLElement.prototype, "add", {
     value: function (...args: (Element | string)[]) {
         args.forEach(elem => {
@@ -190,8 +167,8 @@ if (!Element.prototype.computedStyleMap && globalThis.getComputedStyle != undefi
 
 /**
  * adds a warning message to the specified elements
- * @param {string} str message to display
- * @param  {...(string | HTMLElement)} selectors elements to add warning message to
+ * @param str message to display
+ * @param selectors elements to add warning message to
  */
 export function warn(str: string = "!", ...selectors: (string | HTMLElement)[]) {
     clearWarn(...selectors); // clear any existing warnings
@@ -209,7 +186,7 @@ export function warn(str: string = "!", ...selectors: (string | HTMLElement)[]) 
 
 /**
  * removes the warning message from the given elements
- * @param  {...(string | HTMLElement)} selectors elements to remove the warning message from
+ * @param selectors elements to remove the warning message from
  */
 export function clearWarn(...selectors: (string | HTMLElement)[]) {
     selectors.forEach(s => {
@@ -453,8 +430,7 @@ export const CUSTOM_ELEMENTS = (function () {
 
 /**
  * stringifies the node tree of the given element
- * @param {HTMLElement} element element to stringify
- * @returns {string} string representation of the node tree
+ * @param element element to stringify
  */
 export function stringifyNodeTree(element: HTMLElement): string {
     function traverse(el: HTMLElement, indent: string, arr: string[]): string[] {

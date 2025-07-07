@@ -1,4 +1,3 @@
-/** @type {import("./types.d.ts")} */
 export default function () { // overrides for nodejs
     if (typeof window != "undefined") {
         return; // running in browser, or overrides have already been applied
@@ -23,7 +22,7 @@ export default function () { // overrides for nodejs
             }
         });
     }
-    Object.defineProperty(globalThis, "window", { value: proxy() });
+    Object.defineProperty(globalThis, "window", { value: globalThis });
     Object.defineProperty(globalThis, "HTMLElement", { value: proxy() });
     Object.defineProperty(globalThis, "Element", { value: proxy() });
     Object.defineProperty(globalThis, "getComputedStyle", { value: proxy() });

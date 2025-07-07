@@ -32,8 +32,7 @@ export function dynamicSort(key: string): (a: any, b: any) => number {
  * generates an array sort function that can sort by object properties with optional fallback properties if two values have the same property value\
  * each given property can also have period-separated nested property names for advanced sorting\
  * adding a minus before any property name will reverse the sort order for that property
- * @param  {...string} properties list of properties to sort by
- * @returns {(a: any, b: any): boolean} sort function that can sort an array by the specified properties
+ * @param properties list of properties to sort by
  * @example
  * let func = advancedDynamicSort("a", "b");
  * [

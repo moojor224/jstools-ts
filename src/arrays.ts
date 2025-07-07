@@ -5,7 +5,6 @@ interface RecursiveChildren {
 /**
  * takes in an object and returns a flattened array of all it's children
  * @param arr object to flatten
- * @returns  array of all children
  */
 export function flattenChildren(arr: RecursiveChildren): any[] {
     let children: any[] = [];
