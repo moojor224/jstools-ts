@@ -1,9 +1,9 @@
-import { createElement } from "./createElement.js";
+import { createElement } from "./createElement";
 //@ts-ignore
 import { Prism } from "./lib/prism.js";
 //@ts-ignore
 import { js_beautify } from "./lib/beautify.js";
-import { flattenChildNodes } from "./arrays.js";
+import { flattenChildNodes } from "./arrays";
 
 /**
  * @param val

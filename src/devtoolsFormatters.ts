@@ -1,5 +1,5 @@
-import _node_overrides from "./_node_overrides.js";
-import { DevtoolsFormatter } from "./types.js";
+import _node_overrides from "./_node_overrides";
+import { type DevtoolsFormatter } from "./types.d";
 _node_overrides();
 
 if (!Array.isArray(window.devtoolsFormatters)) {

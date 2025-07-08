@@ -1,7 +1,7 @@
 import React from "react";
-import { createElement } from "./createElement.js";
-import { DevtoolsFormatter, Narrow } from "./types.js";
-import { extend } from "./utility.js";
+import { createElement } from "./createElement";
+import { DevtoolsFormatter, Narrow } from "./types.d";
+import { extend } from "./utility";
 const { useState, useEffect } = React;
 
 if (!Array.isArray(window.devtoolsFormatters)) {

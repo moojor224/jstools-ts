@@ -1,4 +1,3 @@
-import { flattenChildNodes } from "./arrays";
 import { map } from "./math";
 import { extend } from "./utility";
 type color = {

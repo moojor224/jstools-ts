@@ -1,5 +1,5 @@
 
-import override from "./src/_node_overrides.js";
+import override from "./src/_node_overrides";
 override();
 /**
  * one-time definition methods
@@ -22,12 +22,12 @@ if ("devtoolsFormatters" in window && !Array.isArray(window.devtoolsFormatters))
     window.devtoolsFormatters = [];
 }
 
-export { flattenChildNodes, flattenChildren, interleaveArrays, rectangle, reshape } from "./src/arrays.js";
-export { bulkElements } from "./src/bulkElements.js";
-export { captureConsole, customLogger } from "./src/console.js";
-export { CSSColors, Color, getColor, getContrastColor, gradient, rgbMix } from "./src/colors.js";
-export { createElement } from "./src/createElement.js";
-export { cssObjToString, jst_CSSRule, jst_CSSStyleSheet } from "./src/CSS.js";
+export { flattenChildNodes, flattenChildren, interleaveArrays, rectangle, reshape } from "./src/arrays";
+export { bulkElements } from "./src/bulkElements";
+export { captureConsole, customLogger } from "./src/console";
+export { CSSColors, Color, getColor, getContrastColor, gradient, rgbMix } from "./src/colors";
+export { createElement } from "./src/createElement";
+export { cssObjToString, jst_CSSRule, jst_CSSStyleSheet } from "./src/CSS";
 export { consoleButton } from "./src/devtoolsFormatters.js";
 export { CUSTOM_ELEMENTS, clear, clearError, clearWarn, disable, enable, error, hide, show, stringifyNodeTree, warn } from "./src/elements.js";
 // export { React, ReactDOM } from "./src/lib/react_reactdom.js";

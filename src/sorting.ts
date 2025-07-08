@@ -1,6 +1,5 @@
-import { jst_CSSRule as CSSRule, jst_CSSStyleSheet as CSSStyleSheet } from "./CSS.js";
-import { extend } from "./utility.js";
-import { validStyles } from "./validStyles.js";
+import { jst_CSSRule as CSSRule, jst_CSSStyleSheet as CSSStyleSheet } from "./CSS";
+import { extend } from "./utility";
 
 /**
  * generates a array sort function that sorts an array of objects by a specified property name

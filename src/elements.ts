@@ -4,7 +4,7 @@ import { createElement } from "./createElement";
 import _node_overrides from "./_node_overrides";
 import { jst_CSSRule as CSSRule, jst_CSSStyleSheet as CSSStyleSheet } from "./CSS";
 import React from "react";
-import { EventListener } from "./types";
+import { EventListener } from "./types.d";
 _node_overrides();
 
 Object.defineProperty(HTMLElement.prototype, "add", {

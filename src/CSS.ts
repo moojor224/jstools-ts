@@ -1,9 +1,9 @@
 import override from "./_node_overrides";
-import { createElement } from "./createElement.js";
+import { createElement } from "./createElement";
 // @ts-ignore
 import { Prism } from "./lib/prism.js";
-import { extend, getStack, makeTemplate, objectToJSONML, prismToJSONML, wrapInQuotes } from "./utility.js";
-import { validStyles } from "./validStyles.js";
+import { extend, getStack, makeTemplate, objectToJSONML, prismToJSONML, wrapInQuotes } from "./utility";
+import { validStyles } from "./validStyles";
 override();
 
 const selectorExclusionRegex = /:?:(after|before|hover|link|visited|active|focus(-within)?)/g;

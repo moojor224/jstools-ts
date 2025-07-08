@@ -1,4 +1,4 @@
-import { clear } from "./elements.js";
+import { clear } from "./elements";
 
 /**
  * combines a list of selectors or elements into a single object that functions mostly like a single element
