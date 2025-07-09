@@ -220,6 +220,14 @@ declare global {
     interface CSSStyleSheet {
         cssText: string;
     }
+
+    interface CSSRule {
+        cssRules: CSSRuleList;
+        cssText: string;
+        selectorText: string;
+        style: CSSStyleDeclaration;
+        styleMap: StylePropertyMap;
+    }
 }
 
 export type Narrow<T> = | (T extends infer U ? U : never) | Extract<T, any> | ([T] extends [[]] ? [] : { [K in keyof T]: Narrow<T[K]> })

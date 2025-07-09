@@ -1,6 +1,7 @@
 import override from "./_node_overrides";
 import { createElement } from "./createElement";
 // @ts-ignore
+import { CSSRule as CSSOM_Rule, CSSStyleSheet as CSSOM_Sheet, parse } from "cssom";
 import { Prism } from "./lib/prism.js";
 import { extend, getStack, makeTemplate, objectToJSONML, prismToJSONML, wrapInQuotes } from "./utility";
 import { validStyles } from "./validStyles";
@@ -69,6 +70,8 @@ export class jst_CSSRule {
      * returns the final selector of this style rule by combining all parent selectors
      */
     computedSelector(join = ",\n"): string {
+        // TODO: actually make an effort to replace all unquoted ampersands with their entire parent selector
+        // .b { color: red; .a:is(&) { color: blue; } }     is the same as     .b { color: red; } .a:is(.b) { color: blue; }
         let selectorChain = [this.selector];
         let target: jst_CSSRule = this;
         while (target.stylesheet instanceof jst_CSSRule) {
@@ -204,6 +207,56 @@ export class jst_CSSStyleSheet {
     constructor(...rules: jst_CSSRule[]) {
         this.sub_rules = rules.filter(e => e instanceof jst_CSSRule);
         this.init_stack = getStack();
+    }
+
+    static buildFromString(cssText: string): jst_CSSStyleSheet {
+        let localRule: typeof CSSRule | typeof CSSOM_Rule;
+        let localSheet: typeof CSSStyleSheet | typeof CSSOM_Sheet;
+        let convertToSheet: (arg: string) => InstanceType<typeof localSheet>;
+
+        if (typeof document == "function") {
+            console.log("Using CSSOM for parsing");
+            localRule = CSSOM_Rule;
+            localSheet = CSSOM_Sheet;
+            convertToSheet = function (cssText: string) {
+                return parse(cssText);
+            }
+        } else {
+            console.log("Using CSSStyleSheet for parsing");
+            localRule = CSSRule;
+            localSheet = CSSStyleSheet;
+            convertToSheet = function (cssText: string) {
+                const style = document.createElement("style");
+                style.textContent = cssText;
+                style.onerror = function (e) { // not even sure if this is needed
+                    console.error("Error in style:", e);
+                }
+                document.head.append(style); // generate parsed style sheet
+                const s = style.sheet!;
+                style.remove(); // prevent styles from being shown
+                return s;
+            }
+        }
+
+        const sheet = convertToSheet(cssText); // parse the css text into a stylesheet
+        const rules = sheet.cssRules; // get css rules
+        function recurse(rule: CSSRule): jst_CSSRule { // recursively process all rules in sheet
+            console.log("rescursing rule", rule);
+            const styleRules: Record<string, string> = {}; // map of css properties
+            for (let i = 0; i < rule.style.length; i++) {
+                const property = rule.style[i]; // get property name
+                const value = rule.style.getPropertyValue(property); // get property value
+                styleRules[property] = value; // add property to map
+            }
+            const cssRule = new jst_CSSRule(rule.selectorText, styleRules);
+            cssRule.addRules.apply(cssRule, Array.from(rule.cssRules ?? []).map(e => recurse(e))); // add child rules
+            return cssRule;
+        }
+        const styleSheet = new jst_CSSStyleSheet();
+        Array.from(rules).forEach(e => {
+            styleSheet.addRules(recurse(e as CSSRule));
+        });
+        return styleSheet;
     }
 
     /**
