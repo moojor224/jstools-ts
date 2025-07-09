@@ -1,6 +1,3 @@
-// @ts-ignore
-import rules from "./css-properties.json" with { type: "json" };
-
 export const validStyles = (function () {
     try {
         // attempt to build empty CSSStyleDeclaration and get all properties
@@ -19,6 +16,7 @@ export const validStyles = (function () {
     } catch {
         // use css-properties.json that should be bundled with package
         try {
+            const rules = require("./css-properties.json");
             const keys: Set<string> = new Set(rules.map((e: { property: string }) => e.property));
             const other = Array.from(keys.values()).map(e => e.replace(/-(.)/g, (match, group1) => group1.toUpperCase()));
             const other2 = Array.from(keys.values()).map(e => e.replace(/([A-Z])/g, "-$1").toLowerCase()); // convert camelCase to kebab-case
