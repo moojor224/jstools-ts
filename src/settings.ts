@@ -247,7 +247,7 @@ export class Section {
         }
         let settings = this.settings_obj;
         let parent_cont = true;
-        if(settings && !event.defaultPrevented && cont) {
+        if (settings && !event.defaultPrevented && cont) {
             parent_cont = !!settings.dispatchEvent(event);
         }
         return !event.defaultPrevented && cont && parent_cont;
@@ -483,6 +483,22 @@ export class Option<T extends (keyof OptionTypes | keyof OptionInputTypes)> {
         }
         return React.createElement(Component);
     }
+    /**
+     * React hook to listen for changes to the option's value\
+     * returns the option's value, and triggers a state update when the value changes
+     */
+    useValue() {
+        const option = this;
+        const [value, setValue] = useState(0);
+        function changeListener() {
+            setValue(value + 1); // ensure value is different to enforce re-render
+        }
+        useEffect(() => { // listen for changes to option's value
+            option.on("change", changeListener); // listen for changes
+            return () => option.off("change", changeListener); // stop listening when component reloads
+        });
+        return this.value;
+    }
     /** a simple wrapper function to cast an Option object to a specific type of Option */
     as<T extends keyof OptionTypes>(type: T): Option<T> {
         return this as unknown as Option<T>;
@@ -543,7 +559,7 @@ export class Option<T extends (keyof OptionTypes | keyof OptionInputTypes)> {
         }
         let section = this.section_obj;
         let parent_cont = true;
-        if(section && !event.defaultPrevented && cont) {
+        if (section && !event.defaultPrevented && cont) {
             parent_cont = !!section.dispatchEvent(event);
         }
         return !event.defaultPrevented && cont && parent_cont;
