@@ -1,4 +1,4 @@
-import { extend } from "./utility";
+
 
 /**
  * sets `console.everything` to an array of the console's history\
